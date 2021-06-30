@@ -1,0 +1,232 @@
+openapi: 3.0.0
+info:
+  title: 五目オンライン API
+  version: 1.0.0
+  description: |
+    API for GomokuOnline.
+    五目オンライン用API。
+servers:
+  - url: "https://gomokuonline.nodokamome.com/api/{ver}"
+    variables:
+      ver:
+        enum:
+          - v1
+        default: v1
+tags:
+  - name: User
+    description: Manage users.
+  - name: Version
+    description: Manage versions.
+
+security:
+  - token: []
+
+paths:
+  "/users":
+    get:
+      tags:
+        - User
+      summary: ユーザー一覧
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: string
+            example: abcde123
+        - in: query
+          name: state
+          schema:
+            type: string
+            enum:
+              - online
+              - offline
+            example: online
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - rank
+            example: rank
+      responses:
+        "200":
+          description: |
+            取得に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+    post:
+      tags:
+        - User
+      summary: ユーザーの新規登録
+      requestBody:
+        required: true
+        content:
+          appliction/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    user_id:
+                      type: string
+                      example: abcde123
+                    name:
+                      type: string
+                      example: hoge
+                    icon:
+                      type: string
+                      example: icon_1
+      responses:
+        "200":
+          description: |
+            登録に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+  "/users/{user_id}/prof":
+    put:
+      tags:
+        - User
+      summary: ユーザーの情報更新
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            example: abcde123
+          required: true
+      requestBody:
+        required: true
+        content:
+          appliction/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: hoge
+                    icon:
+                      type: string
+                      example: icon_1
+      responses:
+        "200":
+          description: |
+            登録に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+  "/users/{user_id}/match_record":
+    put:
+      tags:
+        - User
+      summary: 試合結果のインクリメント
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            example: abcde123
+          required: true
+      requestBody:
+        required: true
+        content:
+          appliction/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    match_record:
+                      type: string
+                      example: win
+      responses:
+        "200":
+          description: |
+            取得に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+  "/users/{user_id}/state":
+    put:
+      tags:
+        - User
+      summary: オンライン状態設定
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+            example: abcde123
+          required: true
+      requestBody:
+        required: true
+        content:
+          appliction/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    state:
+                      type: string
+                      example: online
+      responses:
+        "200":
+          description: |
+            取得に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+  "/versions":
+    get:
+      tags:
+        - Version
+      summary: バージョン一覧
+      parameters:
+        - in: query
+          name: platform
+          schema:
+            type: string
+            example: platform_name
+            enum:
+              - ios
+              - android
+          required: true
+      responses:
+        "200":
+          description: |
+            取得に成功しました
+        "401":
+          description: |
+            認証に失敗しました
+        "403":
+          description: |
+            エラー
+components:
+  securitySchemes:
+    token:
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"

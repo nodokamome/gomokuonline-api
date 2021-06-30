@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gomokuonline.nodokamome.com
+    tty: true
+    restart: always
+    volumes:
+      - ./src:/src
+    command: [sh, -c, npm install && npm run start]
+    environment:
+      - TZ=Asia/Tokyo
+      - VIRTUAL_HOST=gomokuonline.nodokamome.com
+      - LETSENCRYPT_HOST=gomokuonline.nodokamome.com
+      - LETSENCRYPT_EMAIL=mail@nodokamome.com
+    networks: 
+      - proxy-network  # プロキシネットワーク
+      - app-network    # アプリネットワーク
+
+# プロキシネットワーク、アプリネットワークと接続
+networks:
+  proxy-network:
+    name: proxy_network
+  app-network:
+    name: app_network
