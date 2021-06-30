@@ -1,9 +1,8 @@
 version: '3.5'
 services:
-  node:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  gomokuonline.nodokamome.com:
+    build: .
+    image: gomokuonline.nodokamome.com
     container_name: gomokuonline.nodokamome.com
     tty: true
     restart: always
