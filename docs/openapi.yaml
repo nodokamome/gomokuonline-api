@@ -52,6 +52,9 @@ paths:
         "200":
           description: |
             取得に成功しました
+        "202":
+          description: |
+            ユーザーが見つかりませんでした
         "401":
           description: |
             認証に失敗しました
@@ -106,19 +109,16 @@ paths:
       requestBody:
         required: true
         content:
-          appliction/json:
+          application/json:
             schema:
               type: object
               properties:
-                data:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      example: hoge
-                    icon:
-                      type: string
-                      example: icon_1
+                name:
+                  type: string
+                  example: hoge
+                icon:
+                  type: string
+                  example: icon_1
       responses:
         "200":
           description: |
@@ -143,17 +143,15 @@ paths:
           required: true
       requestBody:
         required: true
+        description: match_recordをwinにすれば勝利数が1インクリメント。loseにすれば敗北数1ディクリメントします。
         content:
-          appliction/json:
+          application/json:
             schema:
               type: object
               properties:
-                data:
-                  type: object
-                  properties:
-                    match_record:
-                      type: string
-                      example: win
+                match_record:
+                  type: string
+                  example: win
       responses:
         "200":
           description: |
@@ -178,17 +176,15 @@ paths:
           required: true
       requestBody:
         required: true
+        description: stateはonline or offlineを入力してください。
         content:
-          appliction/json:
+          application/json:
             schema:
               type: object
               properties:
-                data:
-                  type: object
-                  properties:
-                    state:
-                      type: string
-                      example: online
+                match_record:
+                  type: string
+                  example: online
       responses:
         "200":
           description: |
