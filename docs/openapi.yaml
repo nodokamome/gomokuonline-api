@@ -13,8 +13,8 @@ servers:
           - v1
         default: v1
 tags:
-  - name: User
-    description: Manage users.
+  - name: Player
+    description: Manage players.
   - name: Version
     description: Manage versions.
 
@@ -22,14 +22,14 @@ security:
   - token: []
 
 paths:
-  "/users":
+  "/players":
     get:
       tags:
-        - User
-      summary: ユーザー一覧
+        - Player
+      summary: プレイヤー一覧
       parameters:
         - in: query
-          name: user_id
+          name: player_id
           schema:
             type: string
             example: abcde123
@@ -54,7 +54,7 @@ paths:
             取得に成功しました
         "202":
           description: |
-            ユーザーが見つかりませんでした
+            プレイヤーが見つかりませんでした
         "401":
           description: |
             認証に失敗しました
@@ -63,8 +63,8 @@ paths:
             エラー
     post:
       tags:
-        - User
-      summary: ユーザーの新規登録
+        - 
+      summary: プレイヤーの新規登録
       requestBody:
         required: true
         content:
@@ -75,7 +75,7 @@ paths:
                 data:
                   type: object
                   properties:
-                    user_id:
+                    playerId:
                       type: string
                       example: abcde123
                     name:
@@ -94,14 +94,14 @@ paths:
         "403":
           description: |
             エラー
-  "/users/{user_id}/prof":
+  "/players/{player_id}/prof":
     put:
       tags:
-        - User
-      summary: ユーザーの情報更新
+        - Player
+      summary: プレイヤーの情報更新
       parameters:
         - in: path
-          name: user_id
+          name: player_id
           schema:
             type: string
             example: abcde123
@@ -129,14 +129,14 @@ paths:
         "403":
           description: |
             エラー
-  "/users/{user_id}/match_record":
+  "/players/{player_id}/match_record":
     put:
       tags:
-        - User
+        - Player
       summary: 試合結果のインクリメント
       parameters:
         - in: path
-          name: user_id
+          name: player_id
           schema:
             type: string
             example: abcde123
@@ -162,14 +162,14 @@ paths:
         "403":
           description: |
             エラー
-  "/users/{user_id}/state":
+  "/players/{player_id}/state":
     put:
       tags:
-        - User
+        - Player
       summary: オンライン状態設定
       parameters:
         - in: path
-          name: user_id
+          name: player_id
           schema:
             type: string
             example: abcde123

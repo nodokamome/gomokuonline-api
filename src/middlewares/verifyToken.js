@@ -3,6 +3,7 @@ const mysqlConnection = require('../middlewares/mysqlConnection');
 
 function verifyToken(req, res, next) {
     const authHeader = req.headers.authorization;
+    console.log(authHeader);
     const token = authHeader && authHeader.split(' ')[1];
 
     const sql = 'SELECT EXISTS (SELECT * FROM tokens WHERE ??=?) as exist';
