@@ -2,17 +2,17 @@ const mysql = require('mysql');
 const mysqlConnection = require('../middlewares/mysqlConnection');
 
 function updateLoginAt(req, res, next) {
-    let user_id;
-    if (req.body.user_id) {
-        user_id = req.body.user_id;
+    let player_id;
+    if (req.body.player_id) {
+        player_id = req.body.player_id;
     }
-    else if (req.query.user_id) {
-        user_id = req.query.user_id;
+    else if (req.query.player_id) {
+        player_id = req.query.player_id;
     }
 
-    if (user_id) {
-        const sql = 'UPDATE users SET login_at=NOW() WHERE ??=?';
-        const table = ['user_id', user_id];
+    if (player_id) {
+        const sql = 'UPDATE players SET login_at=NOW() WHERE ??=?';
+        const table = ['player_id', player_id];
         const query = mysql.format(sql, table);
 
         mysqlConnection.query(query, function (err, rows) {

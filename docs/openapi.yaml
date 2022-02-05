@@ -182,7 +182,7 @@ paths:
             schema:
               type: object
               properties:
-                match_record:
+                state:
                   type: string
                   example: online
       responses:
