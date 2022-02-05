@@ -47,7 +47,7 @@ router.get('/', verifyToken, updateLoginAt, function (req, res, next) {
   if (req.query.sort === 'rank') {
     const query = util.promisify(mysqlConnection.query).bind(mysqlConnection);
     (async () => {
-      const sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win-match_record_lose, (SELECT GROUP_CONCAT(match_record_win-match_record_lose ORDER BY match_record_win-match_record_lose DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
+      const sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
       const rows = await query(sql);
 
       console.log(rows);
@@ -134,7 +134,7 @@ router.post('/', verifyToken, function (req, res, next) {
 
   (async () => {
     const queryUtil = util.promisify(mysqlConnection.query).bind(mysqlConnection);
-    sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win-match_record_lose, (SELECT GROUP_CONCAT(match_record_win-match_record_lose ORDER BY match_record_win-match_record_lose DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
+    sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
     const rows = await queryUtil(sql);
 
     for (let row of rows) {
@@ -232,7 +232,7 @@ router.put('/:player_id/match_record', verifyToken, function (req, res, next) {
 
   const rankQuery = util.promisify(mysqlConnection.query).bind(mysqlConnection);
   (async () => {
-    const rankSql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win-match_record_lose, (SELECT GROUP_CONCAT(match_record_win-match_record_lose ORDER BY match_record_win-match_record_lose DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
+    const rankSql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
     const rankRows = await rankQuery(rankSql);
 
     for (let rankRow of rankRows) {
