@@ -32,3 +32,4 @@ jobs:
             cd ${{ secrets.DEPLOY_DIR_PATH }}
             git pull origin main
             docker-compose up --build -d
+            docker-compose restart
