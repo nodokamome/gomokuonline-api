@@ -50,8 +50,25 @@ router.get('/', verifyToken, updateLoginAt, function (req, res, next) {
       const sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
       const rows = await query(sql);
 
-      console.log(rows);
-      for (let row of rows) {
+      // nullが入っているプレイヤーのランク算出
+      const minRank = (() => {
+        return rows.length - rows.filter(a => a.rank === null).length + 1;
+      })();
+      // nullが入っているプレイヤーのランク修正
+      const fixRows = rows.map(a => {
+        if (a.rank === null) {
+          const fixRow = a;
+          fixRow.rank = minRank;
+          return fixRow;
+        }
+        return a;
+      }).sort((a, b) => {
+        if (a.rank < b.rank) return -1;
+        if (a.rank > b.rank) return 1;
+        return 0;
+      });
+
+      for (let row of fixRows) {
         const update = `UPDATE players SET rank=? WHERE ??=?`;
         const table = [row.rank, 'player_id', row.playerId];
         const query = mysql.format(update, table);
@@ -62,7 +79,7 @@ router.get('/', verifyToken, updateLoginAt, function (req, res, next) {
           }
         });
       }
-      res.status(200).json({ message: 'Success', data: rows });
+      res.status(200).json({ message: 'Success', data: fixRows });
     })()
     return;
   }
@@ -137,7 +154,25 @@ router.post('/', verifyToken, function (req, res, next) {
     sql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
     const rows = await queryUtil(sql);
 
-    for (let row of rows) {
+    // nullが入っているプレイヤーのランク算出
+    const minRank = (() => {
+      return rows.length - rows.filter(a => a.rank === null).length + 1;
+    })();
+    // nullが入っているプレイヤーのランク修正
+    const fixRows = rows.map(a => {
+      if (a.rank === null) {
+        const fixRow = a;
+        fixRow.rank = minRank;
+        return fixRow;
+      }
+      return a;
+    }).sort((a, b) => {
+      if (a.rank < b.rank) return -1;
+      if (a.rank > b.rank) return 1;
+      return 0;
+    });
+
+    for (let row of fixRows) {
       let update = `UPDATE players SET rank=? WHERE ??=?`;
       let table = [row.rank, 'player_id', newPlayerData.playerId];
       mysqlConnection.query(mysql.format(update, table), function (err) {
@@ -235,7 +270,25 @@ router.put('/:player_id/match_record', verifyToken, function (req, res, next) {
     const rankSql = 'SELECT player_id AS playerId, name, icon, match_record_win AS matchRecordWin, match_record_lose AS matchRecordLose, FIND_IN_SET(match_record_win/(match_record_win+match_record_lose), (SELECT GROUP_CONCAT(match_record_win/(match_record_win+match_record_lose) ORDER BY match_record_win/(match_record_win+match_record_lose) DESC) FROM players)) AS rank FROM players ORDER BY `rank` ASC';
     const rankRows = await rankQuery(rankSql);
 
-    for (let rankRow of rankRows) {
+    // nullが入っているプレイヤーのランク算出
+    const minRank = (() => {
+      return rankRows.length - rankRows.filter(a => a.rank === null).length + 1;
+    })();
+    // nullが入っているプレイヤーのランク修正
+    const fixRankRows = rankRows.map(a => {
+      if (a.rank === null) {
+        const fixRow = a;
+        fixRow.rank = minRank;
+        return fixRow;
+      }
+      return a;
+    }).sort((a, b) => {
+      if (a.rank < b.rank) return -1;
+      if (a.rank > b.rank) return 1;
+      return 0;
+    });
+
+    for (let rankRow of fixRankRows) {
       const update = `UPDATE players SET rank=? WHERE ??=?`;
       const table = [rankRow.rank, 'player_id', rankRow.playerId];
       const query = mysql.format(update, table);
