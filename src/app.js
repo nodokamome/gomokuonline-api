@@ -8,6 +8,13 @@ const indexRouter = require('./routes/index');
 const playersRouter = require('./routes/players');
 const versionsRouter = require('./routes/versions');
 
+// 6時、18時にonlineのすべてのユーザをofflineに変更
+const cron = require('node-cron');
+const cronOffline = require('./middlewares/cronOffline');
+cron.schedule('0 0 6,18 * * *', async () => {
+  cronOffline();
+});
+
 var app = express();
 
 // view engine setup
